@@ -1,0 +1,66 @@
+created: 20261028120000000
+modified: 20261028120000000
+rdt.order: 3
+rdt.plugin-key: okf
+rdt.plugin-name: okf
+rdt.plugin-subtitle: Open Knowledge Format for markdown files
+rdt.section: Reference
+title: $:/plugins/rimir/okf/doc/reference
+type: text/vnd.tiddlywiki
+
+<$transclude $tiddler="$:/plugins/rimir/doc-template/templates/page">
+<$fill $name="body">
+
+!! Field mapping
+
+|!OKF key |!Tiddler field |!Notes |
+|`type` |`okf.type` |No field when it equals the default type; a TW content type (e.g. `text/markdown` from frontmatter) is dropped |
+|`title` |`caption` |In frontmatter files (no OKF `type`, no `tw.title`) `title` is the tiddler title |
+|`tw.title` |`title` |Written only when the path can't reproduce the title |
+|`tags` |`tags` |Block or flow list |
+|`description` |`description` | |
+|`resource`, `status`, `stale_after` |`okf.resource`, `okf.status`, `okf.stale_after` |Plain text |
+|`generated`, `verified`, `sources`, `usage_window` |`okf.generated`, … |JSON; filter with `jsonget` |
+|`created`, `modified` |`created`, `modified` |TW dates; written as ISO 8601 UTC (`2026-01-02T03:04:05.006Z`) |
+|`list` |`list` |TW list |
+|other scalar keys |same name |e.g. `owner: team:finance` → field `owner` |
+|other nested keys |`okf.extra` |YAML of all such keys, merged back on save |
+
+Fields `text`, `type`, `bag`, `revision` are never written. The tiddler type of loaded OKF files is the configured tiddler type.
+
+!! Configuration
+
+|!Tiddler |!Default |!Meaning |
+|`$:/config/rimir/okf/filter` |(empty) |Scope filter; empty = all frontmatter `.md` files |
+|`$:/config/rimir/okf/default-type` |`tiddler` |OKF `type` for tiddlers without `okf.type` |
+|`$:/config/rimir/okf/tiddler-type` |`text/markdown` |TW type of loaded OKF tiddlers |
+
+!! Scope
+
+|!Situation |!Load |!Save |
+|YAML `type` is not a TW content type |OKF |— |
+|`okf.type` field set |— |OKF |
+|Filter empty |OKF |OKF |
+|Filter matches the tiddler alone |OKF |OKF |
+|Otherwise |frontmatter |frontmatter |
+
+A TW content type is one registered in `$tw.config.contentTypeInfo` or with a parser. Save hooks only run for markdown tiddler types (`text/markdown`, `text/x-markdown`, `text/x-frontmattered-markdown`).
+
+!! Reserved files
+
+`index.md` and `log.md` (in any folder) are loaded as normal tiddlers but get no default `type` on save.
+
+!! Not supported yet
+
+* Translating OKF links (relative file paths) to tiddler links
+* Generating `index.md` / `log.md`
+* Preserving YAML formatting: flow style (`{ by: …, at: … }`) is written back in block style — same data, different layout
+
+!! Restart rules
+
+|!Change |!Restart? |
+|Any `.js` module |Yes |
+|Settings |No for saves; loading uses them at the next boot |
+
+</$fill>
+</$transclude>

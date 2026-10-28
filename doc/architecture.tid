@@ -1,0 +1,50 @@
+created: 20261028120000000
+modified: 20261028120000000
+rdt.order: 2
+rdt.plugin-key: okf
+rdt.plugin-name: okf
+rdt.plugin-subtitle: Open Knowledge Format for markdown files
+rdt.section: Architecture
+title: $:/plugins/rimir/okf/doc/architecture
+type: text/vnd.tiddlywiki
+
+<$transclude $tiddler="$:/plugins/rimir/doc-template/templates/page">
+<$fill $name="body">
+
+!! Module overview
+
+|!Module |!Type |!Purpose |
+|`startup.js` |startup |Registers the three hooks (`after: load-modules`, `before: frontmatter`) |
+|`hooks.js` |library |Hook implementations: scope decision, config, file paths |
+|`mapping.js` |library |OKF document ↔ tiddler fields (`fromOkf`, `toOkf`, `load`, `dump`) |
+|`scope.js` |library |`isTwType`, `isOkfType`, `matchesFilter` |
+|`js-yaml.js` |library |Bundled js-yaml 4.1.0 (MIT) |
+
+!! Load
+
+```
+.md ─► frontmatter document.parse ─► th-frontmatter-parse ─► okf onParse
+         js-yaml (FAILSAFE) ─► fromOkf ─► in scope? ─► replace the flat fields
+```
+
+* The flat-parse keys (`info.parsed`) and `type` are removed, the mapped fields added; fields preset by the caller stay
+* Out of scope or invalid YAML: the flat frontmatter result is returned unchanged (invalid YAML is logged)
+* `info.pathTitle` supplies the title when the YAML names none (`tw.title` or, for frontmatter files, `title`)
+
+!! Save
+
+```
+tiddler ─► generateTiddlerFileInfo ─► th-frontmatter-fileinfo ─► okf onFileInfo (path)
+        ─► document.build ─► th-frontmatter-serialize ─► okf onSerialize ─► toOkf ─► js-yaml dump
+```
+
+* Scope on save: `okf.type` set (and not a TW type) ''or'' the filter matches
+* `tw.title` is written when `title` ≠ the title the file path yields (`info.pathTitle`)
+* File path: the existing `.md` of the tiddler if there is one, else `generateTiddlerFilepath` with a pass-through path filter — `/` become folders, invalid characters are replaced by core
+
+!! Why the FAILSAFE schema
+
+js-yaml's FAILSAFE schema reads every scalar as a string and writes strings without type quoting. TW dates (17 digits, beyond JS number precision) stay exact, and `usage_count: 5000` is written back as `5000`, not `"5000"`.
+
+</$fill>
+</$transclude>

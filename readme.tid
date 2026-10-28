@@ -1,0 +1,28 @@
+title: $:/plugins/rimir/okf/readme
+
+! OKF
+
+Read and write `.md` files in the [[Open Knowledge Format|https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf]] (OKF 0.2) — markdown concepts with YAML frontmatter that knowledge tools and agents exchange. Builds on `rimir/frontmatter` through its extension hooks.
+
+!! Features
+
+* ''OKF 0.2 frontmatter'' — full YAML (nested maps, flow lists): `generated`, `verified`, `sources`, `usage_window` round-trip as JSON fields
+* ''Concept types'' — OKF `type` lives in `okf.type`; the tiddler type is always `text/markdown`
+* ''Concept IDs = paths'' — files stay where they are; new concepts are created at `<title>.md` with `/` as folders
+* ''Exact titles'' — `tw.title` is written only when the file path can't reproduce the tiddler title (e.g. `:`)
+* ''Scope filter'' — all `.md` files by default, or only tiddlers matching a filter (e.g. `[tag[okf]]`)
+* ''Safety rule'' — files whose `type` is not a TW content type are always handled as OKF, so foreign OKF files are never destroyed
+* ''Lossless'' — unknown keys are kept: scalars as fields, nested values in `okf.extra`
+
+!! Prerequisites
+
+* TiddlyWiki 5.3.0+ (Node.js server edition)
+* `rimir/frontmatter` and the official `tiddlywiki/markdown` plugin
+* ''Restart the server after installing'' — the mapping runs in server-side startup and save code
+
+!! Quick Start
+
+# Install the plugin and restart the server
+# Drop OKF `.md` files into `tiddlers/` — `tiddlers/metrics/revenue.md` becomes tiddler `metrics/revenue`, its `type: Metric` the field `okf.type`, its `title` the `caption`
+# Edit as usual — saving writes a valid OKF document back to the same file
+# Optional: restrict OKF to some tiddlers under Settings (e.g. `[tag[okf]]`)

@@ -1,0 +1,35 @@
+caption: OKF
+title: $:/plugins/rimir/okf/settings
+type: text/vnd.tiddlywiki
+
+\whitespace trim
+
+!! Scope filter
+
+<div class="rr-input-row">
+	Handle as OKF:
+	<$edit-text tiddler="$:/config/rimir/okf/filter" tag="input" class="rr-input" placeholder="all .md files" style="width:240px"/>
+	<span class="rr-muted">e.g. <code>[tag[okf]]</code> — empty: every frontmatter <code>.md</code></span>
+</div>
+
+The filter sees only the tiddler itself (on load it isn't in the wiki yet), so use operators like `tag`, `prefix`, `field` — not ones that look at other tiddlers. Files whose YAML `type` is not a TiddlyWiki content type are always handled as OKF. A tiddler that enters or leaves the filter changes format on its next save.
+
+!! Default concept type
+
+<div class="rr-input-row">
+	OKF <code>type</code> when a tiddler has no <code>okf.type</code>:
+	<$edit-text tiddler="$:/config/rimir/okf/default-type" tag="input" default="tiddler" class="rr-input" style="width:160px"/>
+</div>
+
+Must not be a TiddlyWiki content type (like `text/plain`). Files with this type load without an `okf.type` field. `index.md` and `log.md` (reserved by OKF) never get a default type.
+
+!! Tiddler type
+
+<div class="rr-input-row">
+	TiddlyWiki type of OKF tiddlers:
+	<$edit-text tiddler="$:/config/rimir/okf/tiddler-type" tag="input" default="text/markdown" class="rr-input" style="width:240px"/>
+</div>
+
+Applied when OKF files are loaded; never written to the file. Plugins that select markdown tiddlers by type (e.g. `msg-import`, `mgm-tender` match `text/x-frontmattered-markdown`) only see OKF tiddlers if this is set to their type, or if the scope filter excludes their tiddlers.
+
+Changes apply on the next save; for loaded files after a server restart.

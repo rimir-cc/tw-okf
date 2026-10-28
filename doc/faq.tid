@@ -1,0 +1,43 @@
+created: 20261028120000000
+modified: 20261028120000000
+rdt.order: 4
+rdt.plugin-key: okf
+rdt.plugin-name: okf
+rdt.plugin-subtitle: Open Knowledge Format for markdown files
+rdt.section: FAQ
+title: $:/plugins/rimir/okf/doc/faq
+type: text/vnd.tiddlywiki
+
+<$transclude $tiddler="$:/plugins/rimir/doc-template/templates/page">
+<$fill $name="body">
+
+!! I installed the plugin but files are saved as before
+
+Restart the server — the hooks are registered by a startup module. Check the log for `frontmatter: Frontmatter plugin initialized`; `rimir/frontmatter` and `tiddlywiki/markdown` must be installed.
+
+!! Why is my tiddler suddenly `text/markdown`?
+
+With an empty scope filter every frontmatter `.md` is OKF, and OKF tiddlers get the configured tiddler type. If other plugins select tiddlers by type (`msg-import` emails, `mgm-tender` files use `text/x-frontmattered-markdown`), either set a scope filter that excludes them, or set the tiddler type to `text/x-frontmattered-markdown`.
+
+!! What happens to my existing frontmatter files?
+
+They load unchanged (their `title` is still the tiddler title). On the next save they are written as OKF: `type: tiddler`, `caption` as `title`, and `tw.title` if the path can't reproduce the title.
+
+!! Why is there a `tw.title` key in my file?
+
+OKF identifies a concept by its path, and `title` is only a display name. TiddlyWiki replaces characters like `:` in file names, so `work/x:y` lives in `work/x_y.md` — `tw.title` keeps the exact title. Tiddlers whose title matches their path don't get it.
+
+!! A foreign OKF file has no `okf` tag but my filter is `[tag[okf]]` — is it safe?
+
+Yes. Files with an OKF `type` (anything that isn't a TiddlyWiki content type) are always handled as OKF, whatever the filter says. Without this rule, `type: Metric` would become the tiddler type and the next save would write a file without extension plus `.meta`.
+
+!! Can I filter by concept type or nested values?
+
+Yes: `[field:okf.type[Metric]]`, `[has[okf.verified]]`, `[get[okf.generated]jsonget[by]]`.
+
+!! Why does the scope filter only see the tiddler itself?
+
+On load the tiddler isn't in the wiki yet, so the filter runs against a wiki holding only that tiddler — on save too, so both give the same result.
+
+</$fill>
+</$transclude>

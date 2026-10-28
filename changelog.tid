@@ -1,0 +1,4 @@
+title: $:/plugins/rimir/okf/changelog
+
+|!Version |!Date |!Changes |
+|0.1.0 |2026-10-28 |Initial release: OKF 0.2 load/save via the `rimir/frontmatter` hooks — js-yaml parsing (nested maps, flow lists), field mapping (`okf.type`, `caption`, `tw.title`, `okf.*` JSON fields, `okf.extra`), scope filter with safety rule for OKF-typed files, concept-path file locations, ISO 8601 dates, reserved `index.md` / `log.md` |

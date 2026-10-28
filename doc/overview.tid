@@ -1,0 +1,64 @@
+created: 20261028120000000
+modified: 20261028120000000
+rdt.hub-category: infrastructure
+rdt.hub-category-name: Infrastructure
+rdt.hub-order: 3
+rdt.order: 1
+rdt.plugin-key: okf
+rdt.plugin-name: okf
+rdt.plugin-subtitle: Open Knowledge Format for markdown files
+rdt.section: Overview
+title: $:/plugins/rimir/okf/doc/overview
+type: text/vnd.tiddlywiki
+
+<$transclude $tiddler="$:/plugins/rimir/doc-template/templates/page">
+<$fill $name="body">
+
+!! What it does
+
+OKF (Open Knowledge Format, v0.2) describes a knowledge base as a folder of markdown files — one ''concept'' per file, its metadata in YAML frontmatter, its ID being the file path. This plugin lets TiddlyWiki read and write such folders: every concept is a tiddler, every save produces a valid OKF document, and keys TiddlyWiki doesn't know survive the round-trip.
+
+It doesn't patch TiddlyWiki itself. It registers on the three extension hooks of `rimir/frontmatter`, which still does the file detection and saving.
+
+!! How it works
+
+```
+---
+type: Metric
+title: Monthly Revenue
+tags: [finance, revenue]
+generated: { by: agent/x, at: 2026-06-20T22:53:05Z }
+---
+# Revenue
+```
+
+in `tiddlers/metrics/revenue.md` loads as
+
+|!Field |!Value |
+|`title` |`metrics/revenue` (from the path) |
+|`type` |`text/markdown` |
+|`okf.type` |`Metric` |
+|`caption` |`Monthly Revenue` |
+|`tags` |`finance revenue` |
+|`okf.generated` |`{"by":"agent/x","at":"2026-06-20T22:53:05Z"}` |
+
+and is written back to the same file.
+
+!! Which files are OKF
+
+# A file whose YAML `type` is not a TiddlyWiki content type (`Metric`, `Playbook`, …) — ''always'' (safety rule)
+# Otherwise: tiddlers matching the scope filter (Settings); an empty filter means ''every'' frontmatter `.md`
+
+Everything else is left to plain `rimir/frontmatter`.
+
+!! Key design decisions
+
+* ''Separate plugin, hooks in frontmatter'' — frontmatter stays small and flat; OKF brings its own YAML parser (js-yaml) and mapping
+* ''`type` belongs to OKF'' — the concept type lives in `okf.type`; the TW type is implied (`text/markdown`) and never written
+* ''`title` is a display name'' — OKF `title` ↔ `caption`; the tiddler title comes from the path, or from `tw.title` when the path can't express it
+* ''Path = concept ID'' — existing files are never moved; new concepts go to `<title>.md` with folders
+* ''Old frontmatter files stay readable'' — no `type` and no `tw.title` means "written by frontmatter": its `title` is the tiddler title
+* ''Default type `tiddler`'' — OKF requires a `type`; tiddlers without `okf.type` get the configurable default, which is not materialised as a field on load
+
+</$fill>
+</$transclude>

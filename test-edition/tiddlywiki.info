@@ -1,0 +1,13 @@
+{
+    "description": "Test edition for okf",
+    "plugins": [
+        "tiddlywiki/jasmine",
+        "tiddlywiki/markdown",
+        "rimir/frontmatter",
+        "rimir/okf"
+    ],
+    "themes": [
+        "tiddlywiki/vanilla",
+        "tiddlywiki/snowwhite"
+    ]
+}

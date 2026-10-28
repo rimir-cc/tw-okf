@@ -1,0 +1,15 @@
+{
+    "title": "$:/plugins/rimir/okf",
+    "description": "Open Knowledge Format (OKF 0.2) for frontmatter markdown files",
+    "name": "okf",
+    "author": "rimir",
+    "version": "0.1.0",
+    "core-version": ">=5.3.0",
+    "source": "https://github.com/rimir-cc/tw-okf",
+    "plugin-type": "plugin",
+    "list": "readme documentation settings changelog license",
+    "dependents": "$:/plugins/rimir/frontmatter $:/plugins/rimir/theme",
+    "soft-dependents": [
+        "$:/plugins/rimir/doc-template"
+    ]
+}
